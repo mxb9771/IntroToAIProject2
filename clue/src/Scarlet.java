@@ -31,6 +31,7 @@ public class Scarlet extends CluePlayer {
     public ArrayList<String> strategy() {
                 
         Square square = findSquareSmart(curr_row, curr_column, myNotes);
+        System.out.println("Scarlet is moving to: " + square.getRow() + " " + square.getColumn());
         String[] suggestion = moveSmart(curr_row, curr_column, square.getRow(), 
                                    square.getColumn(),"Red","Scarlet",myNotes);
         ArrayList<String> accusation = null;
@@ -38,6 +39,7 @@ public class Scarlet extends CluePlayer {
                                            Clue.SCARLET, Clue.MUSTARD);
         curr_row = square.getRow();
         curr_column = square.getColumn();
+        System.out.println("Returning " + accusation);
         return accusation;
     }
 

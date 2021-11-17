@@ -424,6 +424,7 @@ public class Clue extends JPanel {
         if (turn == SCARLET) {
             if (!scarlet_lost) done = make_accusation(scarlet.strategy());
             if (!done) turn = MUSTARD;
+            System.out.println(scarlet_lost);
         }
         else if (turn == MUSTARD) {
             if (!mustard_lost) done = make_accusation(mustard.strategy());

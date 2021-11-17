@@ -27,7 +27,7 @@ public class CluePlayer {
     private String[] allWeapons = {"Rope","Revolver","Wrench","Pipe",
             "Candlestick","Knife"};
     private boolean rushLounge = true;
-    private final int[] doorlocations =
+    private final int[] doorLocations =
             {
                     4,3,//KitchenDoor
                     4,6,//BallroomDoors
@@ -91,9 +91,8 @@ public class CluePlayer {
             int currentSpot = Integer.parseInt("" + c_row + c_col);
             visited.put(currentSpot, 1);
             tries++;
-            if (tries == 100){
+            if (tries == 969){
                 System.out.println("here");
-                tries--;
             }
             if (tries > 1000) try {
                 throw new GameException("too many random move tries!");
@@ -270,9 +269,9 @@ public class CluePlayer {
      */
     private Target findNextTarget(int row, int col, List<String> rooms){
         List<Target> targets = new ArrayList<>();
-        for(int i = 0; i < doorlocations.length; i+= 2){
-            int doorRow = doorlocations[i];
-            int doorCol = doorlocations[i + 1];
+        for(int i = 0; i < doorLocations.length; i+= 2){
+            int doorRow = doorLocations[i];
+            int doorCol = doorLocations[i + 1];
             int rowDiff = doorRow - row;
             int colDiff = doorCol - col;
             double distance = Math.sqrt((rowDiff*rowDiff) + (colDiff*colDiff));
@@ -371,7 +370,7 @@ public class CluePlayer {
                 if (suspect == null && !notes.getMySuspects().contains(allSuspects[i])) suspect = allSuspects[i];
                 if (weapon == null && !notes.getMyWeapons().contains(allWeapons[i])) weapon = allWeapons[i];
             }
-            String room = Clue.board.getRoom(curr_row, curr_column);
+            String room = Clue.board.getRoom(row, column);
             retVal[0] = name;
             retVal[1] = room;
             retVal[2] = suspect;
@@ -414,27 +413,35 @@ public class CluePlayer {
 
         // Ask the other 5 players to show one of the suggested cards
         // YOUR CODE GOES HERE
-
-
+        for(int x = 0; x < 5; x++){
+            System.out.println( x + " prove accuser wrong");
+            int nextPlayer = x + next;
+            if (nextPlayer > 5) nextPlayer = nextPlayer - 6;
         // Make an accusation
         if (!found) {
             // Check this player's cards to see if this player has them
-            for (int i=0; i<3; i++) { 
-                card = (String)Arrays.asList(
-                      (Clue.allCards.get(Clue.turn)).keySet().toArray()).get(i);
+            for (int i = 0; i < 3; i++) {
+                card = (String) Arrays.asList(
+                        (Clue.allCards.get(nextPlayer)).keySet().toArray()).get(i);
 
-                for (int k=1; k<=3; k++) 
+                for (int k = 1; k <= 3; k++)
                     if (!found && card.equals(suggestion[k])) {
                         found = true;
+                        System.out.println("PROVEN by" + nextPlayer);
+                        if (Clue.cardType(card).equals("suspect")) notes.addSuspect(card);
+                        else if(Clue.cardType(card).equals("weapon")) notes.addWeapon(card);
+                        else if(Clue.cardType(card).equals("room")) notes.addRoom(card);
+                        break;
                     }
             }
-            // If still not found, I do believe I have won the game!
-            for (int i=1; i<4; i++)
-                if (!found)
-                    accusation.add(suggestion[i]);
-                else 
-                    accusation.add("None");
         }
+        }
+        // If still not found, I do believe I have won the game!
+        for (int i=1; i<4; i++)
+            if (!found)
+                accusation.add(suggestion[i]);
+            else
+                accusation.add("None");
         
         return accusation;
     }
